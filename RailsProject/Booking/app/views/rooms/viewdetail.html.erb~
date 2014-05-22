@@ -1,0 +1,111 @@
+<html>
+	<head>
+	<style>
+   html, body {
+        background-color: white;
+        color: black;
+        font: 100%/1.25 sans-serif;
+        margin: 0; 
+        padding: 0;
+        }
+ 
+      p {
+        font-size: 1em;
+        }
+ 
+      #wrapper {
+        border: 1px dotted gray;
+        margin: 20px auto 0;
+        width: 90%;
+        }
+ 
+      #header {
+        overflow: hidden;
+        }
+ 
+      #header h1 {
+        float: left;
+        margin-left: 60px;
+        }
+ 
+      #header ul {
+        padding: 0;
+        text-align: right;
+        }
+ 
+      #header li {
+        border: 1px solid black;
+        display: inline-block;
+        margin: 1em .5em;
+        text-align: left;
+        }
+ 
+
+	</style>
+	</head>
+
+<div id="wrapper">
+      <div id="header">
+				<h1>Booking</h1>searchHotel
+			 
+				<ul>
+				<% if cookies[:login].blank? %>
+					<li><a href="/login">Sign In</a></li>
+			 
+					<li><a href="/register">Sign Up</a></li>
+
+					<%else%>
+
+					<li><a href="/logout">Log Out</a></li>
+
+				<%end%>
+
+					
+					
+					<li><a href="/searchHotel">Booking</a></li>
+
+					<li><a href="/searchComment">Comment</a></li>
+
+				</ul>
+      </div>    
+</div>
+
+
+<form action="/addcomment/<%=@room_id%>" method="post">
+ 	<% if @room %>
+		<% @room.each do |rooms| %>
+			<p> <font size=5> Hotel Name: <%=rooms.name%> </font></p>
+			<img src=<%=rooms.room_image%>>
+			<p> <font size=5> Room Price: <%=rooms.room_price%> </font></p>
+			<p> <font size=5> Room Number: <%=rooms.room_number%> </font></p>
+			<p> <font size=5> Room discount: <%=rooms.room_discount%> </font></p>
+			<p> <font size=5> Comments: </font></p>
+
+		<%end%>
+			<% if @comments %>
+				<% @comments.each do |comments| %>
+					<p> <%=comments.name%> <p>
+					<p> <%=comments.comment%> <p>	
+				<%end%>
+			<%end%>
+						<p> <font size=3> write comment: </font></p>
+			<textarea rows="4" cols="50" name="comment" id="comment"> </textarea>
+		
+	<%else%>
+		<a href="javascript:history.back()"> no hotel available in this country </a>
+	<%end%>
+<br>
+<input type="submit" name="submit" value="Comment" id="s">
+</form>
+
+<script>
+		sub=document.getElementById("s");
+		comment = document.getElementById("comment");
+		sub.addEventListener('click',function(e){
+			if (comment.value == " "){
+				e.preventDefault();
+			}
+		});
+</script>
+
+</body>

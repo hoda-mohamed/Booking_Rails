@@ -1,0 +1,99 @@
+<html>
+	<head>
+	<style>
+   html, body {
+        background-color: white;
+        color: black;
+        font: 100%/1.25 sans-serif;
+        margin: 0; 
+        padding: 0;
+        }
+ 
+      p {
+        font-size: 1em;
+        }
+ 
+      #wrapper {
+        border: 1px dotted gray;
+        margin: 20px auto 0;
+        width: 90%;
+        }
+ 
+      #header {
+        overflow: hidden;
+        }
+ 
+      #header h1 {
+        float: left;
+        margin-left: 60px;
+        }
+ 
+      #header ul {
+        padding: 0;
+        text-align: right;
+        }
+ 
+      #header li {
+        border: 1px solid black;
+        display: inline-block;
+        margin: 1em .5em;
+        text-align: left;
+        }
+ 
+
+	</style>
+	</head>
+
+<div id="wrapper">
+      <div id="header">
+				<h1>Booking</h1>searchHotel
+			 
+				<ul>
+				<% if cookies[:login].blank? %>
+					<li><a href="/login">Sign In</a></li>
+			 
+					<li><a href="/register">Sign Up</a></li>
+
+					<%else%>
+
+					<li><a href="/logout">Log Out</a></li>
+
+				<%end%>
+
+					
+					
+					<li><a href="/searchHotel">Booking</a></li>
+
+					<li><a href="/searchComment">Comment</a></li>
+
+				</ul>
+      </div>    
+</div>
+
+
+<table border="1" style="width:300px">
+	<tr>
+		<td> hotel Name </td>
+		<td> city </td>
+		<td> address </td>
+	</tr>
+	<% if @hotels.size > 0 %>
+		<% @hotels.each do |hotel| %>
+			<tr>
+				<td> <a href = "/avilableRooms/<%= hotel.id%>"> <%= hotel.name%> </a>
+				<td> <%= hotel.city%> </td>
+				<td> <%= hotel.address%> </td>
+			</tr>
+		<%end%>
+	<%else%>
+		<a href="javascript:history.back()"> no hotel available in this country </a>
+	<%end%>
+
+</table>
+
+<%=cookies[:login]%>
+
+<%=cookies[:country1]%>
+
+
+</body>

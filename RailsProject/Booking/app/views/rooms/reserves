@@ -1,0 +1,14 @@
+if cookies[:hotel_id1]
+			cookies[:room_id1] = params[:id]
+			if cookies[:login].blank?
+				redirect_to url_for(:controller => 'signups',:action => 'loginBook')
+			else
+				
+				newParams={"user_id" => cookies[:login] , "hotel_id" => cookies[:hotel_id1], "room_id" => params[:id], "check_in" => cookies[:checkIn1], "check_out" => cookies[:checkOut1] }
+				@reserve = Reserve.new(newParams)
+				@reserve.save
+					redirect_to url_for(:controller => 'hotels',:action => 'search')
+			end
+		else
+				redirect_to url_for(:controller => 'hotels',:action => 'search')
+		end

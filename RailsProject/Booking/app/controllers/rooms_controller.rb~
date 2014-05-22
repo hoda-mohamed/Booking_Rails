@@ -1,0 +1,158 @@
+class RoomsController < ApplicationController
+  # GET /rooms
+  # GET /rooms.json
+  def index
+    @rooms = Room.all
+
+    respond_to do |format|
+      format.html # index.html.erb
+      format.json { render json: @rooms }
+    end
+  end
+
+  # GET /rooms/1
+  # GET /rooms/1.json
+  def show
+    @room = Room.find(params[:id])
+
+    respond_to do |format|
+      format.html # show.html.erb
+      format.json { render json: @room }
+    end
+  end
+
+  # GET /rooms/new
+  # GET /rooms/new.json
+  def new
+    @room = Room.new
+
+    respond_to do |format|
+      format.html # new.html.erb
+      format.json { render json: @room }
+    end
+  end
+
+  # GET /rooms/1/edit
+  def edit
+    @room = Room.find(params[:id])
+  end
+
+  # POST /rooms
+  # POST /rooms.json
+  def create
+    @room = Room.new(params[:room])
+
+    respond_to do |format|
+      if @room.save
+        format.html { redirect_to @room, notice: 'Room was successfully created.' }
+        format.json { render json: @room, status: :created, location: @room }
+      else
+        format.html { render action: "new" }
+        format.json { render json: @room.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # PUT /rooms/1
+  # PUT /rooms/1.json
+  def update
+    @room = Room.find(params[:id])
+
+    respond_to do |format|
+      if @room.update_attributes(params[:room])
+        format.html { redirect_to @room, notice: 'Room was successfully updated.' }
+        format.json { head :no_content }
+      else
+        format.html { render action: "edit" }
+        format.json { render json: @room.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # DELETE /rooms/1
+  # DELETE /rooms/1.json
+  def destroy
+    @room = Room.find(params[:id])
+    @room.destroy
+
+    respond_to do |format|
+      format.html { redirect_to rooms_url }
+      format.json { head :no_content }
+    end
+  end
+
+	def found
+
+		if cookies[:country1]
+			#session[:hotel_id]=params[:id]
+			cookies[:hotel_id1] = { value: params[:id], expires: 1.hour.from_now }
+			@rooms = Room.find_by_sql(["SELECT * FROM `rooms` where rooms.hotel_id=? and rooms.room_number not in (select reserves.room_id from reserves where check_in between ? and ? or check_out between ? and ? )",cookies[:hotel_id1],cookies[:checkIn1],cookies[:checkOut1] ,cookies[:checkIn1],cookies[:checkOut1] ])
+
+		end
+	end
+
+#-----------------------------------------
+	def reserved
+		
+			i=0
+		@choice=params[:role_ids]
+
+		if cookies[:hotel_id1]
+		#	cookies[:room_id1] = params[:id]
+			
+			if cookies[:login].blank?
+				@choice.each do |room|
+					cookies[i] = { value: room, expires: 1.hour.from_now }
+					i+=1
+				end				
+				cookies[:count]=i
+				redirect_to url_for(:controller => 'signups',:action => 'loginBook')
+			else
+				
+				@choice.each do |room|
+					newParams={"user_id" => cookies[:login] , "hotel_id" => cookies[:hotel_id1], "room_id" => room, "check_in" => cookies[:checkIn1], "check_out" => cookies[:checkOut1] }
+					@reserve = Reserve.new(newParams)
+					@reserve.save
+				end
+					redirect_to url_for(:controller => 'hotels',:action => 'search')
+			end
+		else
+				redirect_to url_for(:controller => 'hotels',:action => 'search')
+		end		
+	end
+#---------------------------------------------------
+	def viewdetail
+
+		@room_id=params[:id]
+		@room = Room.find_by_sql(["select * from rooms join hotels on hotel_id=hotels.id where hotel_id=? and room_number=?",cookies[:hotel_id1],params[:id]])
+		@comments=Signup.find_by_sql(["SELECT c.* , s.* FROM  `comments` AS c INNER JOIN signups AS s ON c.user_id = s.id and hotel_id=? and room_id=?",cookies[:hotel_id1],params[:id]])
+
+
+	end
+
+#--------------------------------------
+	def addcomment
+			
+
+			if cookies[:hotel_id1]
+			#	cookies[:room_id1] = params[:id]
+			
+				if cookies[:login].blank?
+					cookies[:room_id1] = params[:id]
+					cookies[:comment1] = params[:comment]
+					redirect_to url_for(:controller => 'signups',:action => 'loginComment')
+				else
+					newParams={"user_id" => cookies[:login] , "hotel_id" => cookies[:hotel_id1], "room_id" => params[:id], "comment" =>params[:comment] }
+					@reserve = Comment.new(newParams)
+					@reserve.save
+
+					redirect_to url_for(:controller => 'hotels',:action => 'search')
+				end
+			else
+					redirect_to url_for(:controller => 'signups',:action => 'search')
+			end	
+
+	end
+#----------------------------------------
+
+end

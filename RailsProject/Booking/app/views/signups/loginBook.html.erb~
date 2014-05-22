@@ -1,0 +1,116 @@
+<html>
+	<head>
+	<style>
+   html, body {
+        background-color: white;
+        color: black;
+        font: 100%/1.25 sans-serif;
+        margin: 0; 
+        padding: 0;
+        }
+ 
+      p {
+        font-size: 1em;
+        }
+ 
+      #wrapper {
+        border: 1px dotted gray;
+        margin: 20px auto 0;
+        width: 90%;
+        }
+ 
+      #header {
+        overflow: hidden;
+        }
+ 
+      #header h1 {
+        float: left;
+        margin-left: 60px;
+        }
+ 
+      #header ul {
+        padding: 0;
+        text-align: right;
+        }
+ 
+      #header li {
+        border: 1px solid black;
+        display: inline-block;
+        margin: 1em .5em;
+        text-align: left;
+        }
+ 
+
+	</style>
+	</head>
+
+<div id="wrapper">
+      <div id="header">
+				<h1>Booking</h1>searchHotel
+			 
+				<ul>
+				<% if cookies[:login].blank? %>
+					<li><a href="/login">Sign In</a></li>
+			 
+					<li><a href="/register">Sign Up</a></li>
+
+					<%else%>
+
+					<li><a href="/logout">Log Out</a></li>
+
+				<%end%>
+
+					
+					
+					<li><a href="/searchHotel">Booking</a></li>
+
+					<li><a href="/searchComment">Comment</a></li>
+
+				</ul>
+      </div>    
+</div>
+
+<h1>Login</h1>
+<%= @notfound %>
+<% @first %>
+	<% if @first == "first"%>
+ 		<script> window.location.href = "/loginBook" </script>
+	<%end%>
+<form action="/loginBook" method="post">
+  <fieldset>
+    <legend>Personalia:</legend>
+		<input type="text" id="h1" style = "border: none;border-color: transparent;color:red; readonly">
+		<br>
+		Email:<input type="email" name="email" id="e" value=<%=@email%> >
+		<br>	
+		<input type="text" id="h2" style = "border: none;border-color: transparent;color:red; readonly">
+		<br>
+		Password: <input type="password" name="password" id="p" value=<%=@password%> >
+		<br>	
+		
+		<input type="submit" value="login" id="s">
+	</fieldset>
+
+<%=cookies[:count] %>
+</form>
+
+<script>
+		sub=document.getElementById("s");
+		email = document.getElementById("e");
+		password = document.getElementById("p");
+		error1 = document.getElementById("h1");
+		error2 = document.getElementById("h2");
+		sub.addEventListener('click',function(e){
+			error1.value=""
+			error2.value=""
+			if (email.value == ""){
+				e.preventDefault();
+				error1.value="enter your email"
+			}
+				if (password.value == ""){
+				e.preventDefault();
+				error2.value="enter your password"
+			}
+		});
+</script>
+
